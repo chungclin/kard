@@ -1,0 +1,29 @@
+{
+  "name": "kard",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "envvar": "^2.0.0",
+    "express": "^4.16.3",
+    "history": "^4.7.2",
+    "moment": "^2.22.2",
+    "plaid": "^2.6.2",
+    "react": "^16.4.2",
+    "react-dom": "^16.4.2",
+    "react-plaid-link": "^1.0.2",
+    "react-scripts": "1.1.4",
+    "redux": "^4.0.0",
+    "redux-devtools-extension": "^2.13.5",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.3.0",
+    "semantic-ui-react": "^0.82.1",
+    "webpack": "^3.11.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
