@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PlaidLink from "react-plaid-link";
 import { connect } from "react-redux";
+import { fetchItem } from '../store/index'
 
 class Plaid extends Component {
     render() {
@@ -30,7 +31,7 @@ class Plaid extends Component {
         // console.log(error, metadata)
       },
       handleOnSuccess(token, metadata) {
-        dispatch(fetchInformation(token, metadata));
+        dispatch(fetchItem(token, metadata));
       }
     };
   };

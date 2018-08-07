@@ -1,5 +1,5 @@
 import { createStore, combineReducers, applyMiddleware } from "redux";
-import createLogger from "redux-logger";
+import { createLogger } from "redux-logger";
 import thunkMiddleware from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension";
 import plaid from "./plaid"
@@ -8,7 +8,7 @@ import plaid from "./plaid"
 
 
 const reducer = combineReducers({
-    user
+    plaid
 })
 
 const middleware = composeWithDevTools(
