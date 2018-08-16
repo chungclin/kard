@@ -6,11 +6,16 @@ var bodyParser = require('body-parser');
 var moment = require('moment');
 var plaid = require('plaid');
 
-var APP_PORT = envvar.number('APP_PORT', 8000);
-var PLAID_CLIENT_ID = envvar.string('PLAID_CLIENT_ID');
-var PLAID_SECRET = envvar.string('PLAID_SECRET');
-var PLAID_PUBLIC_KEY = envvar.string('PLAID_PUBLIC_KEY');
+var APP_PORT = envvar.number('APP_PORT', 3000);
+// var PLAID_CLIENT_ID = envvar.string('PLAID_CLIENT_ID');
+// var PLAID_SECRET = envvar.string('PLAID_SECRET');
+// var PLAID_PUBLIC_KEY = envvar.string('PLAID_PUBLIC_KEY');
+// var PLAID_ENV = envvar.string('PLAID_ENV', 'sandbox');
+var PLAID_CLIENT_ID = '5b61d7a65c103e0011edb447';
+var PLAID_SECRET = 'e66cf4f3415d6a1ac2314a351c891d';
+var PLAID_PUBLIC_KEY = 'bf36c686764634d92bbaad5ed624b7';
 var PLAID_ENV = envvar.string('PLAID_ENV', 'sandbox');
+
 
 // We store the access_token in memory - in production, store it in a secure
 // persistent data store
@@ -20,10 +25,10 @@ var ITEM_ID = null;
 
 // Initialize the Plaid client
 var client = new plaid.Client(
-  PLAID_CLIENT_ID,
-  PLAID_SECRET,
-  PLAID_PUBLIC_KEY,
-  plaid.environments[PLAID_ENV]
+  '5b61d7a65c103e0011edb447',
+  'e66cf4f3415d6a1ac2314a351c891d',
+  'bf36c686764634d92bbaad5ed624b7',
+  plaid.environments.sandbox
 );
 
 var app = express();
@@ -34,15 +39,19 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
-app.get('/', function(request, response, next) {
+app.get('/api/', function(request, response, next) {
   response.render('index.ejs', {
     PLAID_PUBLIC_KEY: PLAID_PUBLIC_KEY,
     PLAID_ENV: PLAID_ENV,
   });
 });
 
-app.post('/get_access_token', function(request, response, next) {
-  PUBLIC_TOKEN = request.body.public_token;
+app.post('/api/get_access_token', function(request, response, next) {
+  console.log(request.body)
+  console.log('post here!!!!!!!!!')
+
+  PUBLIC_TOKEN = request.body.successToken;
+
   client.exchangePublicToken(PUBLIC_TOKEN, function(error, tokenResponse) {
     if (error != null) {
       var msg = 'Could not exchange public_token!';
@@ -61,9 +70,10 @@ app.post('/get_access_token', function(request, response, next) {
   });
 });
 
-app.get('/accounts', function(request, response, next) {
+app.get('/api/accounts', function(request, response, next) {
   // Retrieve high-level account information and account and routing numbers
   // for each account associated with the Item.
+  console.log('here')
   client.getAuth(ACCESS_TOKEN, function(error, authResponse) {
     if (error != null) {
       var msg = 'Unable to pull accounts from the Plaid API.';
@@ -82,9 +92,11 @@ app.get('/accounts', function(request, response, next) {
   });
 });
 
-app.post('/item', function(request, response, next) {
+app.post('/api/item', function(request, response, next) {
   // Pull the Item - this includes information about available products,
   // billed products, webhook information, and more.
+  console.log('here1')
+
   client.getItem(ACCESS_TOKEN, function(error, itemResponse) {
     if (error != null) {
       console.log(JSON.stringify(error));
@@ -111,7 +123,7 @@ app.post('/item', function(request, response, next) {
   });
 });
 
-app.post('/transactions', function(request, response, next) {
+app.post('/api/transactions', function(request, response, next) {
   // Pull transactions for the Item for the last 30 days
   var startDate = moment().subtract(30, 'days').format('YYYY-MM-DD');
   var endDate = moment().format('YYYY-MM-DD');
@@ -131,5 +143,5 @@ app.post('/transactions', function(request, response, next) {
 });
 
 var server = app.listen(APP_PORT, function() {
-  console.log('plaid-walkthrough server listening on port ' + APP_PORT);
+  console.log('plaid server listening on port ' + APP_PORT);
 });

@@ -1,30 +1,32 @@
 import axios from "axios";
 import history from "../history";
 
-
 const initialState = {};
 
-const GET_ACCOUNTS = "GET_ACCOUNTS";
+const GET_ACCESSTOKEN = "GET_ACCESSTOKEN";
 
-const getItem = item => ({
-  type: GET_ACCOUNTS,
-  item
+const getInformation = information => ({
+  type: GET_ACCESSTOKEN,
+  information
 });
 
-// fetch accounts from api
-export const fetchItem = () => dispatch => {
+export const fetchInformation = successToken => dispatch => {
+  console.log(successToken)
   return axios
-    .get("/api/plaid/auth")
+    .post("/api/get_access_token", { successToken })
     .then(res => {
-        dispatch(getItem(res.data));
+      dispatch(getInformation(res.data));
+      if (!res.data.error) {
+        history.push("/login");
+      }
     })
     .catch(err => console.error(err));
 };
 
-export default function accounts(state = initialState, action) {
+export default function plaidReducer(state = initialState, action) {
   switch (action.type) {
-    case GET_ACCOUNTS:
-      return action.item;
+    case GET_ACCESSTOKEN:
+      return action.information;
     default:
       return state;
   }

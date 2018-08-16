@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PlaidLink from "react-plaid-link";
 import { connect } from "react-redux";
-import { fetchItem } from '../store/index'
+import { fetchInformation } from '../store/index'
 
 class Plaid extends Component {
     render() {
@@ -9,10 +9,10 @@ class Plaid extends Component {
       return (
         <div>
           <PlaidLink
-            clientName="Midas"
-            env="development"
+            clientName="Kard"
+            env='sandbox'
             product={["auth", "transactions"]}
-            publicKey="75968c85b9fcf14bb18a8e198161ad"
+            publicKey='bf36c686764634d92bbaad5ed624b7'
             onExit={handleOnExit}
             onSuccess={handleOnSuccess}
             //   onLoad={getData}
@@ -22,8 +22,13 @@ class Plaid extends Component {
         </div>
       );
     }
-  }
+}
   
+
+  const mapState = state => {
+
+  }
+
   const mapDispatch = dispatch => {
     return {
       handleOnExit(metadata) {
@@ -31,9 +36,10 @@ class Plaid extends Component {
         // console.log(error, metadata)
       },
       handleOnSuccess(token, metadata) {
-        dispatch(fetchItem(token, metadata));
+        console.log(token, 'here!')
+        dispatch(fetchInformation(token, metadata));
       }
     };
   };
   
-  export default connect(null, mapDispatch)(Plaid);
+  export default connect(mapState, mapDispatch)(Plaid);
