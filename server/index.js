@@ -4,13 +4,10 @@ var envvar = require('envvar');
 var express = require('express');
 var bodyParser = require('body-parser');
 var moment = require('moment');
+var path = require('path')
 var plaid = require('plaid');
 
 var APP_PORT = envvar.number('APP_PORT', 3000);
-// var PLAID_CLIENT_ID = envvar.string('PLAID_CLIENT_ID');
-// var PLAID_SECRET = envvar.string('PLAID_SECRET');
-// var PLAID_PUBLIC_KEY = envvar.string('PLAID_PUBLIC_KEY');
-// var PLAID_ENV = envvar.string('PLAID_ENV', 'sandbox');
 var PLAID_CLIENT_ID = '5b61d7a65c103e0011edb447';
 var PLAID_SECRET = 'e66cf4f3415d6a1ac2314a351c891d';
 var PLAID_PUBLIC_KEY = 'bf36c686764634d92bbaad5ed624b7';
@@ -33,11 +30,14 @@ var client = new plaid.Client(
 
 var app = express();
 app.use(express.static('public'));
-app.set('view engine', 'ejs');
+// app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({
   extended: false
 }));
 app.use(bodyParser.json());
+
+app.use(express.static(path.join(__dirname, '../public')));
+
 
 app.get('/api/', function(request, response, next) {
   response.render('index.ejs', {
@@ -48,7 +48,6 @@ app.get('/api/', function(request, response, next) {
 
 app.post('/api/get_access_token', function(request, response, next) {
   console.log(request.body)
-  console.log('post here!!!!!!!!!')
 
   PUBLIC_TOKEN = request.body.successToken;
 
@@ -69,6 +68,8 @@ app.post('/api/get_access_token', function(request, response, next) {
     });
   });
 });
+
+console.log('!!!!!', ACCESS_TOKEN)
 
 app.get('/api/accounts', function(request, response, next) {
   // Retrieve high-level account information and account and routing numbers
@@ -95,7 +96,6 @@ app.get('/api/accounts', function(request, response, next) {
 app.post('/api/item', function(request, response, next) {
   // Pull the Item - this includes information about available products,
   // billed products, webhook information, and more.
-  console.log('here1')
 
   client.getItem(ACCESS_TOKEN, function(error, itemResponse) {
     if (error != null) {
@@ -125,6 +125,7 @@ app.post('/api/item', function(request, response, next) {
 
 app.post('/api/transactions', function(request, response, next) {
   // Pull transactions for the Item for the last 30 days
+  console.log('in here', ACCESS_TOKEN)
   var startDate = moment().subtract(30, 'days').format('YYYY-MM-DD');
   var endDate = moment().format('YYYY-MM-DD');
   client.getTransactions(ACCESS_TOKEN, startDate, endDate, {

@@ -13,12 +13,10 @@ const getInformation = information => ({
 export const fetchInformation = successToken => dispatch => {
   console.log(successToken)
   return axios
-    .post("/api/get_access_token", { successToken })
+    .post("api/get_access_token", { successToken })
     .then(res => {
       dispatch(getInformation(res.data));
-      if (!res.data.error) {
-        history.push("/login");
-      }
+        history.push('/transactions')
     })
     .catch(err => console.error(err));
 };

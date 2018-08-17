@@ -7,27 +7,26 @@ import { getItem } from "./store";
 import {
     Login,
     Navigation,
-    Transactions
+    Transactions,
+    Accounts
   } from "./components";
   
 
 class Routes extends Component {
-    // componentDidMount() {
-    //   this.props.loadInitialData();
-    // }
+
   
     render() {
       const { user, isLoggedIn } = this.props;
-  
+      console.log(this.props, 'props')
       return (
         <Switch>  
             <Route exact path="/Login" component={Login} />
           
-  
           {isLoggedIn && (
               <Switch>
                 {/* Routes placed here are only available after logging in */}
                 <Route exact path="/transactions" component={Transactions} />
+                <Route exact path="/accounts" component={Accounts} />
 
               </Switch>
             )}
@@ -41,48 +40,29 @@ class Routes extends Component {
   }
 
 
-//goes after line
-//   {isLoggedIn && (
-//     <Switch>
-//       {/* Routes placed here are only available after logging in */}
-//       <Route exact path="/transactions" component={Transactions} />
-
-//     </Switch>
-//   )}
-// {/* Displays our Login component as a fallback */}
-// {!isLoggedIn && (
-//   <Redirect to="/login" />
-// )}
-
-
   /**
  * CONTAINER
  */
 const mapState = state => {
-  console.log(state)
+  console.log('routes', state)
   return {
     // Being 'logged in' for our purposes will be defined has having a state.user that has a truthy id.
     // Otherwise, state.user will be an empty object, and state.user.id will be falsey
     // isLoggedIn: state.plaid
-    // user: state.user.plaidTokenId,
+    isLoggedIn: state.plaid,
   };
 };
 
 const mapDispatch = dispatch => {
   return {
     // loadInitialData() {
-    //   dispatch(getItem());
+    //   dispatch(me());
     // }
   };
 };
 
 // The `withRouter` wrapper makes sure that updates are not blocked
 // when the url changes
-// export default withRouter(
-//   connect(
-//     mapState,
-//     mapDispatch
-//   )(Routes)
-// );
 
-export default Routes
+
+export default withRouter(connect(mapState,mapDispatch)(Routes));

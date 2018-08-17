@@ -1,16 +1,43 @@
 import React, { Component } from "react";
-import PlaidLink from "react-plaid-link";
 import { connect } from "react-redux";
+import { fetchTransactions } from "../store"
+
+
+class Transactions extends Component {
+    constructor(props){
+        super(props)
+    }
+
+    componentDidMount(){
+        this.props.getTransactions()
+    }
 
 
 
-class Plaid extends Component {
+    render(){
+        return (
+            <div>
+            </div>
+        )
+    }
+
 }
 
 
 const mapState = state => {
     return {
-      user: state.user
+        state
+    //   user: state.user
     }
   }
 
+const mapDispatch = dispatch => {
+    return {
+        getTransactions(){
+            dispatch(fetchTransactions())
+        }
+    }
+}
+
+
+  export default connect(mapState, mapDispatch)(Transactions);
