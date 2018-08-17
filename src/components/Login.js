@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import PlaidLink from "react-plaid-link";
 import { connect } from "react-redux";
-import { fetchInformation } from '../store/index'
+import { fetchInformation, fetchTransactions } from '../store/index'
+import history from '../history'
 
 class Plaid extends Component {
     render() {
@@ -26,7 +27,9 @@ class Plaid extends Component {
   
 
   const mapState = state => {
-
+    return {
+      state
+    }
   }
 
   const mapDispatch = dispatch => {
@@ -37,7 +40,10 @@ class Plaid extends Component {
       },
       handleOnSuccess(token, metadata) {
         console.log(token, 'here!')
-        dispatch(fetchInformation(token, metadata));
+        dispatch(fetchInformation(token, metadata))
+        .then(() => dispatch(fetchTransactions()));
+        
+        history.push('/transactions')
       }
     };
   };
